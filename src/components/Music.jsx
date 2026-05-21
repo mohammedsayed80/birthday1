@@ -1,43 +1,63 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import "../App.css";
 import img from "../assets/img/download.webp";
 import music from "../assets/music/10._Zay_Manty.mp3";
+
 const Music = () => {
-  const Music = document.getElementById("AudioMusic");
-  const playBtn = document.getElementById("play-btn");
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const togglePlay = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const forward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime += 10;
+    }
+  };
+
+  const backward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime -= 10;
+    }
+  };
+
   return (
-    <div class="music">
+    <div className="music"> 
       <figure>
-        <img src={img} alt="" />
+        <img src={img} alt="Music Cover" />
       </figure>
-      <div class="range">
+      
+      <div className="range">
         <h4>زي م انتي</h4>
         <p>لحبيبتي ايه</p>
       </div>
-      <div class="controls">
-        <button type="button" id="forward" onClick={() => {
-          Music.currentTime += 10;
-        }}>
-          <i class="fa-solid fa-forward"></i>
+      
+      <div className="controls">
+        <button type="button" id="forward" onClick={forward}>
+          <i className="fa-solid fa-forward"></i>
         </button>
-        <button type="button" id="play-btn" onClick={() => {
-          if (Music.paused) {
-            Music.play();
-            playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-          } else {
-            Music.pause();
-            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-          }
-        }}>
-          <i class="fa-solid fa-play"></i>
+
+        <button type="button" id="play-btn" onClick={togglePlay}>
+          {isPlaying ? (
+            <i className="fa-solid fa-pause"></i>
+          ) : (
+            <i className="fa-solid fa-play"></i>
+          )}
         </button>
-        <button type="button" id="backward" onClick={() => {
-          Music.currentTime -= 10;
-        }}>
-          <i class="fa-solid fa-backward"></i>
+
+        <button type="button" id="backward" onClick={backward}>
+          <i className="fa-solid fa-backward"></i>
         </button>
       </div>
-      <audio src={music} style={{display:'none'}} id="AudioMusic"></audio>
+
+      <audio ref={audioRef} src={music} style={{ display: 'none' }}></audio>
     </div>
   );
 };
